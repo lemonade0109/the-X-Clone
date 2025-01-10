@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model Tweet {
+  id       String   @id @default(uuid()) @map("_id")
+  text     String
+  author    Profile     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+  image    String?
+  profileImage String
+  createdAt DateTime @default(now())
+   likedBy TweetLike[]
+  comments TweetComment[]
+  hashtags TweetHashtags[]
+  bookmark TweetBookmark[]
+}
+
+model TweetLike {
+  id       String   @id @default(uuid()) @map("_id")
+  tweet    Tweet     @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId  String
+  user     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  createdAt DateTime @default(now())
+}
+
+model TweetComment {
+  id       String   @id @default(uuid()) @map("_id")
+  tweet    Tweet     @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId  String
+  user     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  text     String
+  createdAt DateTime @default(now())
+}
+
+model Hashtag {
+  id       String   @id @default(uuid()) @map("_id")
+  name     String
+  tweets   TweetHashtags[]
+}
+
+model TweetHashtags {
+  id       String   @id @default(uuid()) @map("_id")
+  tweet    Tweet     @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId  String
+  hashtag  Hashtag   @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+  hashtagId String
+}
+
+model TweetBookmark {
+  id       String   @id @default(uuid()) @map("_id")
+  tweet    Tweet     @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId  String
+  user     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  createdAt DateTime @default(now())
+}
+
+model Profile {
+  id       String   @id @default(uuid()) @map("_id")
+  name     String
+  userName  String  @unique
+  profileImage  String
+  bio      String
+  location String
+  website  String
+  dob DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tweets    Tweet[]
+  likedTweets TweetLike[]
+  comments TweetComment[]
+  bookmarks TweetBookmark[]
+}
+

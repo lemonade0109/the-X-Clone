@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## This should be built fully from scratch by ME(Lemonade)
 
-## Getting Started
+Npm packages to install:
 
-First, run the development server:
+1. zod for input validations
+2. react-icons for icons
+3. shadcn ui for pre built components
+4. react toasts
+5. prisma for database interactions
+6. mongoDB to store the data
+7. Cloudinary to store image and for image optimizations
+8. Lucia Auth for creating user and authentications
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+steps to follow in building this project
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. create a diagram of how the routes would be
+2. map out components needed from the routes
+3. List out the features this project would have
+4. structure out the data models needed for this project
+5. start bulding the layouts first then we keep going on from there
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-## Learn More
+generator client {
+provider = "prisma-client-js"
+}
 
-To learn more about Next.js, take a look at the following resources:
+datasource db {
+provider = "mongodb"
+url = env("DATABASE_URL")
+}
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+model User {
+clerkId String @id @map("\_id")
+tweets Tweet[]
+followers Follow[] @relation("userFollowers")
+following Follow[] @relation("userFollowing")
+Like Like[]
+Comment Comment[]
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+model Follow {
+id String @id @default(uuid()) @map("\_id")
+follower User @relation("userFollowers", fields: [followerId], references: [clerkId])
+followerId String
+following User @relation("userFollowing", fields: [followingId], references: [clerkId])
+followingId String
+}
 
-## Deploy on Vercel
+model Tweet {
+id String @id @default(cuid()) @map("\_id")
+content String
+user User @relation(fields: [userId], references: [clerkId])
+userId String
+createdAt DateTime @default(now())
+likes Like[]
+comments Comment[]
+}
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+model Like {
+id String @id @default(auto()) @map("\_id") @db.ObjectId
+tweet Tweet @relation(fields: [tweetId], references: [id])
+tweetId String
+user User @relation(fields: [userId], references: [clerkId])
+userId String
+createdAt DateTime @default(now())
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+model Comment {
+id String @id @default(auto()) @map("\_id") @db.ObjectId
+tweet Tweet @relation(fields: [tweetId], references: [id])
+tweetId String
+user User @relation(fields: [userId], references: [clerkId])
+userId String
+content String
+createdAt DateTime @default(now())
+}
