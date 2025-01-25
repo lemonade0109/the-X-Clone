@@ -1,12 +1,12 @@
 import React from "react";
 
-import Posts from "./Posts";
-import { fetchTweetAction } from "@/lib/actions/tweet/tweetActions";
+import Posts from "./TweetsServerside";
+import { fetchTweetsAction } from "@/lib/actions/tweet/tweetActions";
 
 const Feeds = async () => {
-  const tweets = await fetchTweetAction();
+  const tweets = await fetchTweetsAction();
 
-  if (!tweets)
+  if (tweets.length === 0)
     return (
       <p className="text-gray-500 font-bold text-2xl uppercase">
         Something went wrong try reloading
@@ -14,11 +14,11 @@ const Feeds = async () => {
     );
 
   return (
-    <div className="flex flex-col w-[100%]">
+    <section className="flex flex-col w-[100%]">
       {tweets.map((tweet) => (
         <Posts tweet={tweet} key={tweet.id} />
       ))}
-    </div>
+    </section>
   );
 };
 

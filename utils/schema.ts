@@ -15,6 +15,10 @@ export function validateWithZodSchema<T>(
   return results.data;
 }
 
+export const tweetSchema = z.object({
+  tweet: z.string().min(2).max(1000),
+});
+
 export const imageSchema = z.object({
   image: validateFile(),
 });

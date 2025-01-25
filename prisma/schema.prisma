@@ -26,6 +26,8 @@ model Tweet {
   comments TweetComment[]
   hashtags TweetHashtags[]
   bookmark TweetBookmark[]
+  retweet Retweet[]
+  commentsReply CommentReply[]
 }
 
 model TweetLike {
@@ -34,6 +36,8 @@ model TweetLike {
   tweetId  String
   user     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
+  comment TweetComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?
   createdAt DateTime @default(now())
 }
 
@@ -41,9 +45,23 @@ model TweetComment {
   id       String   @id @default(uuid()) @map("_id")
   tweet    Tweet     @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId  String
-  user     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
+  author     Profile     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  likes TweetLike[]
+  bookmark TweetBookmark[]
+  retweet Retweet[]
   text     String
+  reply CommentReply[]
+  createdAt DateTime @default(now())
+}
+
+model CommentReply {
+  id  String  @id @default(uuid()) @map("_id")
+  replies TweetComment  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId String
+  tweet Tweet? @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId String?
+  text  String
   createdAt DateTime @default(now())
 }
 
@@ -67,7 +85,19 @@ model TweetBookmark {
   tweetId  String
   user     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
+  comment TweetComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?
   createdAt DateTime @default(now())
+}
+
+model Retweet {
+   id String @id @default(uuid()) @map("_id")
+   user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+   userId String
+   tweet Tweet @relation(fields: [tweetId], references: [id], onDelete: Cascade )
+   tweetId String
+   comment  TweetComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+   commentId String
 }
 
 model Profile {
@@ -85,5 +115,6 @@ model Profile {
   likedTweets TweetLike[]
   comments TweetComment[]
   bookmarks TweetBookmark[]
+  retweet Retweet[]
 }
 

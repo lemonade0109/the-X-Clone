@@ -18,17 +18,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function uploadImage(image: File): Promise<string> {
-  const imageData = await image.arrayBuffer();
-  const mime = image.type;
-  const encoding = "base64";
-  const base64Data = Buffer.from(imageData).toString("base64");
-  const fileUri = `data:${mime};${encoding},${base64Data}`;
-  const result = await cloudinary.uploader.upload(fileUri, {
-    folder: "x-clone-app-mutations",
-  });
-  return result.secure_url;
+export async function uploadImage(image: File) {
+  try {
+    const imageData = await image.arrayBuffer();
+    const mime = image.type;
+    const encoding = "base64";
+    const base64Data = Buffer.from(imageData).toString("base64");
+    // const fileUri = `data:${mime};base64,${base64Data}`;
+    const fileUri = `data:${mime};${encoding},${base64Data}`;
+    const result = await cloudinary.uploader.upload(fileUri, {
+      folder: "x-clone-app-mutations",
+    });
+    return result.secure_url;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // import axios from "axios";

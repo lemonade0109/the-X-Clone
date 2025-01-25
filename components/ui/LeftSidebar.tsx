@@ -26,7 +26,7 @@ const LeftSidebar = async () => {
   ];
 
   return (
-    <section className=" hidden md:inline w-[25%] h-screen border-r border-gray-200 dark:border-gray-800 sticky top-0">
+    <section className=" border-r  hidden md:inline w-[20%] h-screen  border-gray-200 dark:border-gray-800 sticky top-0">
       <div className="flex flex-col justify-between h-screen p-3 ">
         <div className="flex flex-col gap-8 ">
           <Link
@@ -48,7 +48,7 @@ const LeftSidebar = async () => {
             </Link>
           ))}
 
-          <Button className="py-10 mx-6 rounded-full  text-2xl text-black font-bold ">
+          <Button className="py-8 mx-6 rounded-full  text-2xl text-black font-bold ">
             Post{" "}
           </Button>
         </div>

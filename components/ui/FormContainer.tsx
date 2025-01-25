@@ -28,6 +28,10 @@ const FormContainer = ({
     }
   }, [state, toast]);
 
-  return <form action={formAction}>{children}</form>;
+  return (
+    <form noValidate action={formAction}>
+      {children}
+    </form>
+  );
 };
 export default FormContainer;
