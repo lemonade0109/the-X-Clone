@@ -1,16 +1,18 @@
 import React from "react";
 import { FaXTwitter } from "react-icons/fa6";
-import { CiSearch, CiMail, CiHome, CiCircleMore } from "react-icons/ci";
+import { CiSearch, CiMail, CiHome } from "react-icons/ci";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import Link from "next/link";
 
-import UserImage from "./UserImage";
 import { Button } from "./button";
 import { fetchUserProfileImage } from "@/lib/actions/profile/profileActions";
+import MoreDetails2 from "./moreDetails2";
+import UserImage from "./userImage";
 
 const LeftSidebar = async () => {
   const user = await fetchUserProfileImage();
+  if (!user) return;
 
   const NavLinks = [
     { name: "Home", icon: CiHome, href: "/home" },
@@ -22,7 +24,7 @@ const LeftSidebar = async () => {
     },
     { name: "Messages", icon: CiMail, href: "/messages" },
     { name: `Profile`, icon: CgProfile, href: `/${user?.userName}` },
-    { name: "More", icon: CiCircleMore, href: "/more" },
+    // { name: "More", icon: CiCircleMore, href: "/more" },
   ];
 
   return (
@@ -48,8 +50,12 @@ const LeftSidebar = async () => {
             </Link>
           ))}
 
-          <Button className="py-8 mx-6 rounded-full  text-2xl text-black font-bold ">
-            Post{" "}
+          <MoreDetails2 user={user?.userName} />
+          <Button
+            asChild
+            className="py-8 px-4 rounded-full  text-2xl text-black font-bold "
+          >
+            <Link href={"/compose/post"}>Post</Link>
           </Button>
         </div>
 

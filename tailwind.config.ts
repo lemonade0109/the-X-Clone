@@ -9,6 +9,15 @@ export default {
   ],
   theme: {
     extend: {
+      animation: {
+        slide: "slide 1s ease-in-out",
+      },
+      keyframes: {
+        slide: {
+          "0": { width: "0%" },
+          "100%": { width: "100%" },
+        },
+      },
       colors: {
         twitter: "rgb(29, 161, 242)",
         background: "hsl(var(--background))",

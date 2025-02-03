@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import React from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export type actionFunction = (
@@ -19,19 +19,33 @@ const FormContainer = ({
   action: actionFunction;
   children: React.ReactNode;
 }) => {
-  const [state, formAction] = useActionState(action, initialState);
+  const [formState, formAction] = React.useActionState(action, initialState);
+  // const [isButtonDisabled, setIsButtonDisabled] = React.useState<boolean>(true);
+
+  // const handleInputChange = async (e: FormEvent<HTMLFormElement>) => {
+  //   const form = e.currentTarget;
+  //   const textValue = form?
+
+  //   setIsButtonDisabled(!textValue);
+  // };
+
+  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const formDataToSend = new FormData(e.currentTarget);
+
+  //   await formAction(formDataToSend);
+
+  //   e.currentTarget.reset();
+  //   setIsButtonDisabled(true);
+  // };
 
   const { toast } = useToast();
-  useEffect(() => {
-    if (state && state.message) {
-      toast({ description: state.message });
+  React.useEffect(() => {
+    if (formState && formState.message) {
+      toast({ description: formState.message });
     }
-  }, [state, toast]);
+  }, [formState, toast]);
 
-  return (
-    <form noValidate action={formAction}>
-      {children}
-    </form>
-  );
+  return <form action={formAction}>{children}</form>;
 };
 export default FormContainer;

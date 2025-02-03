@@ -1,23 +1,28 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import CommentIcon from "../icons/tweet-features/CommentIcon";
-import RetweetIcon from "../icons/tweet-features/RetweetIcon";
-import LikeIcon from "../icons/tweet-features/LikeIcon";
-import Bookmark from "../icons/tweet-features/Bookmark";
+import CommentIcon from "../icons/CommentIcon";
+import RetweetIcon from "../icons/RetweetIcon";
+import LikeIcon from "../icons/LikeIcon";
+import Bookmark from "../icons/Bookmark";
 import { CommentProps } from "@/utils/interface";
 import { useAuth } from "@clerk/nextjs";
-import MoreDetails from "../ui/MoreDetails";
+import MoreDetails from "../../ui/moreDetails";
 
-const CommentsClientside = ({ comments }: CommentProps) => {
+const CommentsContainer = ({ comments }: CommentProps) => {
   const { userId } = useAuth();
+  const { name, userName, profileImage } = comments.author;
+  const authorId = comments.author.id;
+  const { likes, reply, bookmarks, id, text } = comments;
+
+  if (!comments) return;
 
   //! TODO: create the commentReply prisma schema. The one used is the tweetReply prisma schema(TEMP)
-  const likesCount = comments.likes?.length ?? 0;
-  const commentCount = comments.reply?.length ?? 0;
+  const likesCount = likes.length ?? 0;
+  const commentCount = reply.length ?? 0;
 
-  const isLiked = comments.likes?.some((like) => like.userId === userId);
-  const isBookmarked = comments.bookmarks?.some(
+  const isLiked = likes.some((like) => like.userId === userId);
+  const isBookmarked = bookmarks?.some(
     (bookmark) => bookmark.userId === userId
   );
   return (
@@ -27,7 +32,7 @@ const CommentsClientside = ({ comments }: CommentProps) => {
           <div className="flex items-start pl-2">
             <div className="w-12 h-12 rounded-full relative">
               <Image
-                src={comments.author.profileImage}
+                src={profileImage}
                 alt="profile image"
                 fill
                 className="rounded-full"
@@ -39,31 +44,32 @@ const CommentsClientside = ({ comments }: CommentProps) => {
             <div>
               <div className="flex justify-between ">
                 <div className="flex items-center  space-x-1">
-                  <h3 className="font-bold text-lg truncate">
-                    {comments.author.name}
-                  </h3>
+                  <h3 className="font-bold text-lg truncate">{name}</h3>
                   <p className="text-gray-500 tracking-normal truncate">
-                    @{comments.author.userName}
+                    @{userName}
                   </p>
                 </div>
 
-                <MoreDetails />
+                <MoreDetails tweetId={id} authorId={authorId} />
               </div>
 
               <div>
-                <p>{comments.text}</p>
+                <p>{text}</p>
               </div>
             </div>
 
             <div className="flex justify-between ">
-              <CommentIcon tweet={comments} commentCount={commentCount} />
-              <RetweetIcon />
-              <LikeIcon
-                likesCount={likesCount}
-                isLiked={isLiked}
-                id={comments.id}
+              <CommentIcon
+                tweetTxt={text}
+                name={name}
+                userName={userName}
+                commentCount={commentCount}
+                tweetId={id}
+                profileImage={profileImage}
               />
-              <Bookmark id={comments.id} isBookmarked={isBookmarked!} />
+              <RetweetIcon />
+              <LikeIcon likesCount={likesCount} isLiked={isLiked} id={id} />
+              <Bookmark id={id} isBookmarked={isBookmarked!} />
             </div>
           </div>
         </div>
@@ -73,4 +79,4 @@ const CommentsClientside = ({ comments }: CommentProps) => {
   );
 };
 
-export default CommentsClientside;
+export default CommentsContainer;

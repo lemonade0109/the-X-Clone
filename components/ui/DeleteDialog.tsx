@@ -14,9 +14,14 @@ import { Button } from "./button";
 import { useAuth } from "@clerk/nextjs";
 import { useToast } from "@/hooks/use-toast";
 import { deleteTweetAction } from "@/lib/actions/tweet/tweetActions";
-import { TweetProps } from "@/utils/interface";
 
-const DeleteDialog = ({ tweet }: TweetProps) => {
+const DeleteDialog = ({
+  tweetId,
+  authorId,
+}: {
+  tweetId: string;
+  authorId: string;
+}) => {
   const [isDeletePending, startDeleteTransition] = React.useTransition();
   const { userId } = useAuth();
   const { toast } = useToast();
@@ -45,9 +50,9 @@ const DeleteDialog = ({ tweet }: TweetProps) => {
             <Button
               disabled={isDeletePending}
               onClick={() => {
-                if (userId === tweet.author.id) {
+                if (userId === authorId) {
                   startDeleteTransition(() => {
-                    deleteTweetAction({ tweetId: tweet.id, userId: userId });
+                    deleteTweetAction({ tweetId: tweetId, userId: userId });
                     toast({
                       description: "Tweet deleted successfully!",
                     });

@@ -14,7 +14,7 @@ import { Button } from "./button";
 
 import { useRouter } from "next/navigation";
 import { createUserProfileAction } from "@/lib/actions/profile/profileActions";
-import FormContainer from "./FormContainer";
+import FormContainer from "./formContainer";
 
 const Modal = () => {
   const router = useRouter();

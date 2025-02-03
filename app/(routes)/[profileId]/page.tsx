@@ -1,7 +1,7 @@
 import { fetchProfileDetails } from "@/lib/actions/profile/profileActions";
 import React from "react";
 
-export default async function page({
+export default async function ProfilePage({
   params,
 }: {
   params: { profileId: string };

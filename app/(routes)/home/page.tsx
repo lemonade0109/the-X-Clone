@@ -4,6 +4,8 @@ import Feeds from "@/components/home/Feeds";
 import TweetsForm from "@/components/home/TweetsForm";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import HeaderContainer from "@/components/ui/headerContainer";
+import { fetchUserProfileImage } from "@/lib/actions/profile/profileActions";
 
 export default async function HomePage() {
   const user = await currentUser();
@@ -11,14 +13,16 @@ export default async function HomePage() {
     redirect("/profile");
   }
 
+  const userProfile = await fetchUserProfileImage();
+
   return (
-    <section className="flex flex-col w-[50%]">
-      <div className="border-b w-full h-16 border-gray-800 bg-black px-4 py-2 sticky top-0 left-0">
+    <section className="flex flex-col w-full">
+      <HeaderContainer>
         <h1 className="text-2xl mt-2 font-bold">Home</h1>
-      </div>
+      </HeaderContainer>
 
       <div className="flex flex-col w-full">
-        <TweetsForm />
+        <TweetsForm userImage={userProfile?.profileImage} />
         <Feeds />
       </div>
     </section>

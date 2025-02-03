@@ -1,6 +1,6 @@
 import React from "react";
 
-import Posts from "./TweetsServerside";
+import Tweets from "./Tweets";
 import { fetchTweetsAction } from "@/lib/actions/tweet/tweetActions";
 
 const Feeds = async () => {
@@ -16,7 +16,7 @@ const Feeds = async () => {
   return (
     <section className="flex flex-col w-[100%]">
       {tweets.map((tweet) => (
-        <Posts tweet={tweet} key={tweet.id} />
+        <Tweets tweet={tweet} key={tweet.id} />
       ))}
     </section>
   );

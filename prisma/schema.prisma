@@ -83,7 +83,7 @@ model TweetBookmark {
   id       String   @id @default(uuid()) @map("_id")
   tweet    Tweet     @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId  String
-  user     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  author     Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
   comment TweetComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId String?

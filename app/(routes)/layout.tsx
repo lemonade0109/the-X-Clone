@@ -1,7 +1,7 @@
 import React from "react";
 
-import LeftSidebar from "@/components/ui/LeftSidebar";
-import RightSidebar from "@/components/ui/RightSidebar";
+import LeftSidebar from "@/components/ui/leftSidebar";
+import RightSidebar from "@/components/ui/rightSidebar";
 import { Metadata } from "next";
 import "../globals.css";
 
@@ -24,16 +24,19 @@ export const metadata: Metadata = {
 };
 
 export default function HomeLayout({
+  modal,
   children,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <div className="w-full h-full flex justify-center items-center  bg-black ">
       <div className="xl:max-w-[70vw] flex">
         <LeftSidebar />
 
-        {children}
+        <div className="">{modal}</div>
+        <div className="w-[48%]">{children}</div>
 
         <RightSidebar />
       </div>

@@ -1,3 +1,4 @@
+"use client";
 import { BsPin } from "react-icons/bs";
 import { GoChecklist } from "react-icons/go";
 import { GoMute } from "react-icons/go";

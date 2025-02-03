@@ -22,6 +22,34 @@ export interface TweetProps {
   id?: string;
 }
 
+export interface AllBookmarksProps {
+  userId: string;
+  id: string;
+  tweetId: string;
+  createdAt: Date;
+  commentId: string | null;
+  tweet: {
+    id: string;
+    text: string;
+    authorId: string;
+    image: string | null;
+    profileImage: string;
+    createdAt: Date;
+  };
+  author: {
+    id: string;
+    name: string;
+    userName: string;
+    profileImage: string;
+    bio: string;
+    location: string;
+    website: string;
+    createdAt: Date;
+    updatedAt: Date;
+    dob: Date;
+  };
+}
+
 export interface TweetReplyProps extends TweetProps {
   isLiked: boolean | null;
   isBookmarked: boolean | null;
@@ -58,11 +86,33 @@ export interface CommentProps {
 }
 
 export interface BookmarkProps {
-  userId: string;
-  id: string;
-  tweetId: string;
-  createdAt: Date;
-  commentId: string | null;
+  bookmark: {
+    userId: string;
+    id: string;
+    tweetId: string;
+    createdAt: Date;
+    commentId: string | null;
+    tweet: {
+      id: string;
+      text: string;
+      authorId: string;
+      image: string | null;
+      profileImage: string;
+      createdAt: Date;
+    };
+    author: {
+      id: string;
+      name: string;
+      userName: string;
+      profileImage: string;
+      bio: string;
+      location: string;
+      website: string;
+      createdAt: Date;
+      updatedAt: Date;
+      dob: Date;
+    };
+  };
 }
 
 export interface LikeProps {
@@ -76,4 +126,26 @@ export interface LikeProps {
 export interface CommentReply {
   id: string;
   replyId: string;
+}
+
+export interface UserProps {
+  user: {
+    name?: string;
+    userName?: string;
+    profileImage: string;
+  };
+}
+
+export interface TweetContainerProps {
+  authorId: string;
+  profileImage: string;
+  userName: string;
+  name: string;
+  tweetImage: string | null;
+  tweetTxt: string;
+  tweetId: string;
+  isLiked: boolean | undefined;
+  likeCount: number;
+  isBookmarked: boolean | undefined;
+  commentCount: number;
 }

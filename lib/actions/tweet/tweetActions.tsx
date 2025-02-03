@@ -4,11 +4,7 @@ import { getAuthUser } from "@/lib/authUser";
 import { uploadImage } from "@/utils/cloudinary";
 import prisma from "@/utils/db";
 import renderError from "@/utils/error";
-import {
-  imageSchema,
-  tweetSchema,
-  validateWithZodSchema,
-} from "@/utils/schema";
+import { tweetSchema, validateWithZodSchema } from "@/utils/schema";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { revalidatePath } from "next/cache";
@@ -22,17 +18,22 @@ export const createTweetAction = async (
   if (!user) throw new Error("Please login to write a tweet");
 
   try {
-    const tweet = formData.get("tweet") as string;
-    const imageFile = formData.get("image") as File;
-    const validateTweet = validateWithZodSchema(tweetSchema, { tweet });
-    const validateFile = validateWithZodSchema(imageSchema, {
-      image: imageFile,
-    });
+    let imageFileUrl = null;
 
-    let imageFileUrl;
+    const tweet = formData.get("text") as string;
+    const validateTweet = validateWithZodSchema(tweetSchema, { tweet });
+    const imageFile = formData.get("image") as File | undefined;
+
+    // if (imageFile) {
+    //   validatedFile = validateWithZodSchema(imageSchema, {
+    //     image: imageFile,
+    //   });
+    // }
 
     try {
-      imageFileUrl = await uploadImage(validateFile.image);
+      if (imageFile && imageFile.size > 0) {
+        imageFileUrl = await uploadImage(imageFile);
+      }
     } catch (error) {
       console.log("Error uploading image", error);
     }
@@ -49,10 +50,10 @@ export const createTweetAction = async (
     revalidatePath("/home");
   } catch (error) {
     console.log(error);
-    return renderError(error);
+    return renderError({ error: "Tweet was not created" });
   }
 
-  return { message: "Unknown error occurred" };
+  return { message: "Tweet successfully created" };
 };
 
 export const fetchTweetsAction = async () => {
@@ -79,29 +80,32 @@ export const fetchSearchedTweetsAction = async ({
 }) => {
   const searchResults = await prisma.tweet.findMany({
     where: {
-      author: {
-        name: {
-          contains: searchTerm,
-          mode: "insensitive",
+      OR: [
+        {
+          author: {
+            name: {
+              contains: searchTerm,
+              mode: "insensitive",
+            },
+          },
         },
-        userName: {
-          contains: searchTerm,
-          mode: "insensitive",
+        {
+          author: {
+            userName: {
+              contains: searchTerm,
+              mode: "insensitive",
+            },
+          },
         },
-      },
+        {
+          text: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+      ],
     },
-    select: {
-      id: true,
-      text: true,
-      author: {
-        select: {
-          name: true,
-          userName: true,
-          profileImage: true,
-        },
-      },
-      image: true,
-    },
+
     orderBy: {
       createdAt: "desc",
     },
@@ -109,7 +113,7 @@ export const fetchSearchedTweetsAction = async ({
 
   return searchResults;
 };
-export const fetchTweetAction = async ({
+export const fetchSingleTweetAction = async ({
   tweetId,
   userId,
 }: {
@@ -264,6 +268,37 @@ export const createTweetBookmarkAction = async ({
   revalidatePath("/home");
 };
 
+export const fetchAllBookmarks = async ({
+  searchText,
+}: {
+  searchText?: string;
+}) => {
+  const bookmarks = await prisma.tweetBookmark.findMany({
+    include: {
+      author: true,
+      tweet: true,
+    },
+    where: {
+      OR: [
+        {
+          author: {
+            name: { contains: searchText, mode: "insensitive" },
+            userName: {
+              contains: searchText,
+              mode: "insensitive",
+            },
+          },
+        },
+        {
+          tweet: { text: { contains: searchText, mode: "insensitive" } },
+        },
+      ],
+    },
+  });
+
+  return bookmarks;
+};
+
 export const fetchTweetBookmarkAction = async (
   tweetId: string,
   userId: string
@@ -273,7 +308,7 @@ export const fetchTweetBookmarkAction = async (
       tweetId: tweetId,
     },
     include: {
-      user: true,
+      author: true,
     },
   });
 
@@ -346,6 +381,9 @@ export const fetchRepliesAction = async ({ tweetId }: { tweetId: string }) => {
       bookmark: true,
       likes: true,
       reply: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 

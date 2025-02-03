@@ -1,4 +1,4 @@
-import LogoutModal from "@/components/ui/LogoutModal";
+import LogoutModal from "@/components/ui/logoutModal";
 import React from "react";
 
 export default function page() {

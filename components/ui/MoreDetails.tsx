@@ -4,10 +4,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 import { HiDotsHorizontal } from "react-icons/hi";
 import { links } from "@/utils/moreLinks";
-import DeleteDialog from "./DeleteDialog";
-import { TweetProps } from "@/utils/interface";
+import DeleteDialog from "./deleteDialog";
 
-const MoreDetails = ({ tweet }: TweetProps) => {
+const MoreDetails = (props: { tweetId: string; authorId: string }) => {
   return (
     <Popover>
       <PopoverTrigger>
@@ -25,7 +24,7 @@ const MoreDetails = ({ tweet }: TweetProps) => {
       >
         <ul className="  w-full h-full space-y-6">
           <li>
-            <DeleteDialog tweet={tweet} />
+            <DeleteDialog authorId={props.authorId} tweetId={props.tweetId} />
           </li>
 
           {links.map((link) => (

@@ -7,15 +7,12 @@ import {
   fetchRepliesAction,
   fetchTweetBookmarkAction,
 } from "@/lib/actions/tweet/tweetActions";
-import Tweet from "./TweetsClientside";
+import TweetContainer from "./TweetContainer";
+import EmptyList from "../ui/emptyList";
 
 const Tweets = async ({ tweet }: TweetProps) => {
   if (!tweet) {
-    return (
-      <p className="text-gray-500 font-bold text-2xl uppercase">
-        Kindly post your first tweet
-      </p>
-    );
+    return <EmptyList />;
   }
 
   const user = await getAuthUser();
@@ -29,13 +26,22 @@ const Tweets = async ({ tweet }: TweetProps) => {
     tweetId: tweet.id,
   });
 
+  const { userName, name } = tweet.author;
+  const { authorId, text, profileImage, id, image } = tweet;
+
   return (
-    <Tweet
-      tweet={tweet}
-      isLiked={isLiked}
-      likesCount={likesCount}
+    <TweetContainer
+      userName={userName}
+      name={name}
+      authorId={authorId}
+      tweetId={id}
+      tweetImage={image}
+      tweetTxt={text}
+      profileImage={profileImage}
       isBookmarked={isBookmarked}
+      isLiked={isLiked}
       commentCount={commentCount}
+      likeCount={likesCount}
     />
   );
 };
